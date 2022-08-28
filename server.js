@@ -51,6 +51,10 @@ app.get("/api/users/list", function (req, res) {
         }
     });
 });
+
+/********************/
+/**Questions Crud***/
+/******************/
 app.get("/api/questions/list", function (req, res) {
     let table = "questions";
     let request = new sql.Request();
@@ -129,6 +133,44 @@ app.delete("/api/question/:Id", function (req, res) {
             console.log("question deleted");
             res.send(JSON.stringify({ status: "success" }));
         }
+    });
+});
+
+/********************/
+/**Answers***/
+/******************/
+
+app.get("/api/answers/list", function (req, res) {
+    let table = "answers";
+    let request = new sql.Request();
+    let query = "SELECT * FROM [" + table + "]";
+
+    request.query(query, (err, result) => {
+        if (err) throw err;
+        if (result && result.recordset && result.recordset.length > 0) {
+            res.send(result.recordset);
+        } else {
+            res.send([]);
+        }
+    });
+});
+
+app.post("/api/answers/insert", function (req, res) {
+    let answers = JSON.stringify(req.body.answers);
+    let name = req.body.user_name;
+    let email = req.body.user_email;
+
+    let request = new sql.Request();
+    request.input("answers", sql.Text, answers);
+    request.input("name", sql.VarChar, name);
+    request.input("email", sql.VarChar, email);
+
+    let query_insert =
+        "INSERT INTO [answers] (answers_data,user_name,user_email) OUTPUT Inserted.Id VALUES (@answers,@name,@email)";
+    request.query(query_insert, (err1, result1) => {
+        if (err1) throw err1;
+        console.log("question saved");
+        res.send(JSON.stringify({ status: "success" }));
     });
 });
 
