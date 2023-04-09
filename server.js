@@ -1,5 +1,4 @@
 const serverport = 3000;
-
 const express = require("express");
 const app = express();
 const sql = require("mssql");
@@ -8,15 +7,13 @@ const xmlparser = require("express-xml-bodyparser");
 var config = require('./config');
 app.use(xmlparser());
 
-
 sql.connect(config, function (err) {
     // console.log(err);
 });
 
 app.use(cors());
-
-app.use(express.static(__dirname + "/public"));
 app.use(express.json());
+
 app.post("/api/login", function (req, res) {
     console.log("login request");
 
@@ -56,6 +53,7 @@ app.get("/api/users/list", function (req, res) {
 /**Questions Crud***/
 /******************/
 app.get("/api/questions/list", function (req, res) {
+    console.log('questions list', req.body);
     let table = "questions";
     let request = new sql.Request();
     let query = "SELECT * FROM [" + table + "]";
@@ -70,6 +68,7 @@ app.get("/api/questions/list", function (req, res) {
     });
 });
 app.post("/api/question/insert", function (req, res) {
+    console.log('questions insert', req.body);
     let question = req.body.question;
     let status = req.body.status ? req.body.status : 1;
 
@@ -85,6 +84,8 @@ app.post("/api/question/insert", function (req, res) {
     });
 });
 app.put("/api/question/update", function (req, res) {
+    console.log('questions update', req.body);
+
     let question_id = req.body.Id;
     let question = req.body.question;
     let status = req.body.status ? req.body.status : 1;
@@ -156,6 +157,8 @@ app.get("/api/answers/list", function (req, res) {
 });
 
 app.post("/api/answers/insert", function (req, res) {
+    console.log('answers insert', req.body);
+
     let answers = JSON.stringify(req.body.answers);
     let name = req.body.user_name;
     let email = req.body.user_email;
