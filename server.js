@@ -8,7 +8,6 @@ var config = require('./config');
 app.use(xmlparser());
 
 sql.connect(config, function (err) {
-    // console.log(err);
 });
 
 app.use(cors());
